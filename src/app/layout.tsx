@@ -1,0 +1,132 @@
+import type { Metadata, Viewport } from "next";
+import { Bebas_Neue, Geist, Geist_Mono } from "next/font/google";
+import { portfolio } from "@/data/portfolio";
+import { siteUrl } from "@/lib/site-url";
+import { effectsBootstrap } from "@/lib/effects-preference";
+import "./globals.css";
+import "./editorial.css";
+import "./github-activity.css";
+import "./case-study.css";
+
+const themeScript = `(function(){var t;try{t=localStorage.getItem('wilfried-portfolio-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#181917':'#f4f0e7'})()`;
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const bebasNeue = Bebas_Neue({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const roleTitle = portfolio.identity.role.replace(/\b\w/g, (letter) =>
+  letter.toUpperCase(),
+);
+const title = `${portfolio.identity.fullName} | ${roleTitle}`;
+const socialTitle = `${portfolio.identity.shortName} | Portfolio`;
+const socialDescription = `${portfolio.identity.headline} Explore my software projects, achievements, and research.`;
+const description =
+  `Portfolio of ${portfolio.identity.fullName}, an aspiring software engineer with hands-on full-stack development experience building practical applications for business, education, exploration, research, and community workflows.`;
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  alternates: { canonical: "/" },
+  title: {
+    default: title,
+    template: `%s | ${portfolio.identity.shortName}`,
+  },
+  description,
+  applicationName: `${portfolio.identity.fullName} Portfolio`,
+  authors: [
+    {
+      name: portfolio.identity.fullName,
+      url: portfolio.socials.github,
+    },
+  ],
+  creator: portfolio.identity.fullName,
+  publisher: portfolio.identity.fullName,
+  category: "technology",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png", sizes: "64x64" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
+  keywords: [
+    portfolio.identity.fullName,
+    "aspiring software engineer",
+    "software engineering",
+    "full-stack development",
+    "React developer",
+    "TypeScript developer",
+    "Next.js developer",
+    "Python developer",
+    "Laravel developer",
+    "software portfolio",
+  ],
+  openGraph: {
+    url: "/",
+    type: "website",
+    locale: "en",
+    title: socialTitle,
+    description: socialDescription,
+    siteName: `${portfolio.identity.shortName} Portfolio`,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `${portfolio.identity.fullName} — ${portfolio.identity.role} portfolio`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: socialTitle,
+    description: socialDescription,
+    images: ["/opengraph-image"],
+  },
+  other: {
+    "contact:email": portfolio.identity.email,
+    "contact:phone": portfolio.identity.phone,
+    "contact:github": portfolio.socials.github,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#f4f0e7",
+  colorScheme: "light dark",
+  viewportFit: "cover",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: effectsBootstrap }} />
+      </head>
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
+    </html>
+  );
+}

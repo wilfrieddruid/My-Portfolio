@@ -1,0 +1,22 @@
+{
+  "abidjan-quest": {
+    "repo": "https://github.com/wilfrieddruid/Abidjan-Quest",
+    "commit": "2356dc8b0785ce53ae45f8e2fce9efdbe87088dd",
+    "checkedAt": "2026-11-10",
+    "documents": [
+      "docs/ARCHITECTURE.md",
+      "services/api/requirements.txt",
+      "apps/web/package.json"
+    ]
+  },
+  "dict-e-app": {
+    "repo": "https://github.com/wilfrieddruid/Dict-e-App",
+    "commit": "8cf9646bbf2656b9e9f1411bc4a263833142eb10",
+    "checkedAt": "2026-11-10",
+    "documents": [
+      "backend/package.json",
+      "backend/prisma/schema.prisma",
+      "dictee-app/package.json"
+    ]
+  }
+}

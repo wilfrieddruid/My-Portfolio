@@ -1,0 +1,128 @@
+/* Opening animation: logo drops and bounces, name and role are typed, then the page is revealed. */
+
+.intro {
+  /* One unit drives every size: the composition keeps the same proportions on every screen. */
+  --u: clamp(8px, 2.5vw, 16px);
+  --intro-ink: var(--ink, #11110f);
+  --intro-accent: var(--accent-solid, #b83c2b);
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 16px;
+  background: var(--paper, #f4f0e7);
+  animation: intro-exit 0.85s cubic-bezier(0.76, 0, 0.24, 1) 3.7s forwards;
+}
+
+.intro__stage { display: flex; align-items: center; }
+
+/* 1. The logo falls from the top and bounces */
+.intro__logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--u) * 7);
+  aspect-ratio: 0.9;
+  border-radius: calc(var(--u) * 0.45);
+  background: var(--intro-accent);
+  color: #fff;
+  font-family: monospace;
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 900;
+  letter-spacing: -0.12em;
+  box-shadow: 0 calc(var(--u) * 0.9) calc(var(--u) * 1.9) calc(var(--u) * -0.75) rgb(0 0 0 / 0.35);
+  animation: intro-drop 1.05s linear 0.15s both;
+}
+
+/* 2. The text area opens to the right of the logo, then the lines are typed */
+.intro__text {
+  display: grid;
+  grid-template-columns: 0fr;
+  animation: intro-open 0.6s cubic-bezier(0.22, 0.8, 0.25, 1) 1.15s forwards;
+}
+.intro__lines { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; overflow: hidden; padding: calc(var(--u) * 0.25) calc(var(--u) * 0.4) calc(var(--u) * 0.25) 0; }
+
+.intro__line { position: relative; display: block; width: max-content; }
+.intro__type {
+  display: block;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+  animation: intro-type var(--dur) steps(var(--chars), end) var(--delay) forwards;
+}
+.intro__line::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  left: 0;
+  width: max(2px, calc(var(--u) * 0.12));
+  background: var(--intro-accent);
+  opacity: 0;
+  animation:
+    intro-caret var(--dur) steps(var(--chars), end) var(--delay) forwards,
+    intro-caret-off 0.01s linear calc(var(--delay) + var(--dur) + 0.25s) forwards;
+}
+
+.intro__name {
+  --chars: 14;
+  --delay: 1.5s;
+  --dur: 0.9s;
+  margin-left: calc(var(--u) * 1.75);
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: calc(var(--u) * 4.4);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--intro-ink);
+}
+.intro__role {
+  --chars: 22;
+  --delay: 2.5s;
+  --dur: 0.8s;
+  margin: calc(var(--u) * 0.6) 0 0 calc(var(--u) * 1.75);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: calc(var(--u) * 1.2);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--intro-accent);
+}
+
+/* Progress line along the bottom edge */
+.intro__bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--intro-accent);
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: intro-bar 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes intro-drop {
+  0%   { transform: translateY(-75vh) rotate(-3deg) scale(1, 1); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  42%  { transform: translateY(0) rotate(-3deg) scale(1, 1); animation-timing-function: ease-out; }
+  47%  { transform: translateY(0) rotate(-3deg) scale(1.16, 0.84); animation-timing-function: ease-out; }
+  58%  { transform: translateY(-27%) rotate(-3deg) scale(0.97, 1.04); animation-timing-function: ease-in; }
+  70%  { transform: translateY(0) rotate(-3deg) scale(1.08, 0.92); animation-timing-function: ease-out; }
+  80%  { transform: translateY(-10%) rotate(-3deg) scale(1, 1); animation-timing-function: ease-in; }
+  90%  { transform: translateY(0) rotate(-3deg) scale(1.03, 0.97); animation-timing-function: ease-out; }
+  100% { transform: translateY(0) rotate(-3deg) scale(1, 1); }
+}
+@keyframes intro-open { to { grid-template-columns: 1fr; } }
+@keyframes intro-type { to { clip-path: inset(0 0 0 0); } }
+@keyframes intro-caret { from { left: 0; opacity: 1; } to { left: 100%; opacity: 1; } }
+@keyframes intro-caret-off { to { opacity: 0; } }
+@keyframes intro-bar { to { transform: scaleX(1); } }
+@keyframes intro-exit {
+  0%   { transform: translateY(0); visibility: visible; }
+  99%  { transform: translateY(-100%); visibility: visible; }
+  100% { transform: translateY(-100%); visibility: hidden; pointer-events: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { display: none; }
+}
